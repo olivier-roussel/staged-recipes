@@ -35,7 +35,7 @@ build:
 
 cache:
   build:
-    script: build-cache
+    script: scripts/build-cache
 
   requirements:
     build:
