@@ -52,7 +52,6 @@ cache:
       - tinyxml2
       - eigen
       - cxxopts
-      - metis =5.1.0
       - gtest
 
 outputs:
@@ -68,11 +67,14 @@ outputs:
     requirements: 
       run_exports:
         - ${{ pin_subpackage("libsofa", upper_bound='x.x.x') }}
+    tests:
+      - package_contents:
+          lib: Sofa.Core*
     about:
       summary: Runtime librairies for the SOFA framework
       description: Runtime librairies for SOFA, a real-time multi-physics
        simulator with an emphasis on medical simulation and robotics.
-      license: LGPL-2.1
+      license: LGPL-2.1-or-later
       license_file:
         - LICENSE-LGPL.md
         - extlibs/difflib/LICENSE.MIT
@@ -94,12 +96,17 @@ outputs:
         - ${{ pin_subpackage("libsofa", exact=True) }}
       run_exports:
         - ${{ pin_subpackage("libsofa", upper_bound='x.x.x') }}
-
+    tests:
+      - package_contents:
+          include: Sofa.Core/sofa/core/init.h
+          files:
+            - ${{ "Library/" if win }}lib/cmake/Sofa.Core/Sofa.CoreConfig.cmake
+            - ${{ "Library/" if win }}lib/cmake/Sofa.Core/Sofa.CoreConfigVersion.cmake
     about:
       summary: Development librairies for the SOFA framework
       description: Development librairies for SOFA, a real-time multi-physics
        simulator with an emphasis on medical simulation and robotics.
-      license: LGPL-2.1
+      license: LGPL-2.1-or-later
       license_file:
         - LICENSE-LGPL.md
         - extlibs/difflib/LICENSE.MIT
@@ -134,10 +141,108 @@ outputs:
           then: libglu
       run_exports:
         - ${{ pin_subpackage("sofa-gl", upper_bound='x.x.x') }}
+    tests:
+      - package_contents:
+          include: Sofa.GL/sofa/gl/initSofa.GL.h
+          lib: Sofa.GL*
+          files:
+            - ${{ "Library/" if win }}lib/cmake/Sofa.GL/Sofa.GLConfig.cmake
+            - ${{ "Library/" if win }}lib/cmake/Sofa.GL/Sofa.GLConfigVersion.cmake
     about:
       summary: SOFA GL rendering library
       description: GL rendering library for SOFA, a real-time multi-physics
        simulator with an emphasis on medical simulation and robotics.
-      license: LGPL-2.1
+      license: LGPL-2.1-or-later
       license_file:
         - LICENSE-LGPL.md
+
+  - package:
+      name: sofa-gui-qt
+    build:
+      script: scripts/build-sofa-gui-qt
+    requirements:
+      build:
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+        - cmake
+        - if: unix
+          then: make
+        - if: win
+          then: ninja
+        - if: linux
+          then: ${{ cdt('mesa-libgl-devel') }}
+      host:
+        - ${{ pin_subpackage('sofa-devel', exact=True) }}
+        - ${{ pin_subpackage('sofa-gl', exact=True) }}
+        - qt-main
+        - ffmpeg
+        - libqglviewer
+        - eigen
+        - libboost-headers
+        - cxxopts
+      run:
+        - ${{ pin_subpackage('libsofa', exact=True) }}
+        - ${{ pin_subpackage('sofa-gl', exact=True) }}
+        - glew
+        - if: linux
+          then: libglu
+        # these are apparently required by qt on windows
+        - if: win
+          then:
+            - libzlib
+            - libjpeg-turbo
+            - libpng
+      run_exports:
+        - ${{ pin_subpackage("sofa-gui-qt", upper_bound='x.x.x') }}
+    tests:
+      - package_contents:
+          include: Sofa.GUI.Qt/sofa/gui/qt/init.h
+          lib: Sofa.GUI.Qt*
+          files:
+            - ${{ "Library/" if win }}lib/cmake/Sofa.GUI.Qt/Sofa.GUI.QtConfig.cmake
+            - ${{ "Library/" if win }}lib/cmake/Sofa.GUI.Qt/Sofa.GUI.QtConfigVersion.cmake
+    about:
+      summary: Qt-based GUI library for the SOFA framework
+      description: Qt-based GUI library for SOFA, a real-time multi-physics
+       simulator with an emphasis on medical simulation and robotics.
+      license: GPL-2.0-or-later
+      license_file:
+        - Sofa/GUI/Qt/LICENSE.GPL.txt
+
+  - package:
+      name: sofa-app
+    build:
+      script: scripts/build-sofa-app
+    requirements:
+      build:
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+        - cmake
+        - if: unix
+          then: make
+        - if: win
+          then: ninja
+      host:
+        - ${{ pin_subpackage('sofa-devel', exact=True) }}
+        - ${{ pin_subpackage('sofa-gui-qt', exact=True) }}
+        - eigen
+        - libboost-headers
+        - cxxopts
+      run:
+        - ${{ pin_subpackage('libsofa', exact=True) }}
+        - ${{ pin_subpackage('sofa-gui-qt', exact=True) }}
+    tests:
+      - package_contents:
+          bin: runSofa
+    about:
+      summary: Applications and ressources for the SOFA framework
+      description: Application (runSofa) and ressources (examples and share) for SOFA,
+       a real-time multi-physics simulator with an emphasis on medical simulation and robotics.
+      license: GPL-2.0-or-later
+      license_file:
+        - applications/projects/LICENSE.GPL.txt
+
+extra:
+  recipe-maintainers:
+    - olivier-roussel
+    - hugtalbot
