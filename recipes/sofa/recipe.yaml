@@ -69,7 +69,8 @@ outputs:
         - ${{ pin_subpackage("libsofa", upper_bound='x.x.x') }}
     tests:
       - package_contents:
-          lib: Sofa.Core*
+          lib:
+            - Sofa.Core*
     about:
       summary: Runtime librairies for the SOFA framework
       description: Runtime librairies for SOFA, a real-time multi-physics
@@ -98,7 +99,8 @@ outputs:
         - ${{ pin_subpackage("libsofa", upper_bound='x.x.x') }}
     tests:
       - package_contents:
-          include: Sofa.Core/sofa/core/init.h
+          include:
+            - Sofa.Core/sofa/core/init.h
           files:
             - ${{ "Library/" if win }}lib/cmake/Sofa.Core/Sofa.CoreConfig.cmake
             - ${{ "Library/" if win }}lib/cmake/Sofa.Core/Sofa.CoreConfigVersion.cmake
@@ -143,8 +145,10 @@ outputs:
         - ${{ pin_subpackage("sofa-gl", upper_bound='x.x.x') }}
     tests:
       - package_contents:
-          include: Sofa.GL/sofa/gl/initSofa.GL.h
-          lib: Sofa.GL*
+          include:
+            - Sofa.GL/sofa/gl/initSofa.GL.h
+          lib:
+            - Sofa.GL*
           files:
             - ${{ "Library/" if win }}lib/cmake/Sofa.GL/Sofa.GLConfig.cmake
             - ${{ "Library/" if win }}lib/cmake/Sofa.GL/Sofa.GLConfigVersion.cmake
@@ -196,8 +200,10 @@ outputs:
         - ${{ pin_subpackage("sofa-gui-qt", upper_bound='x.x.x') }}
     tests:
       - package_contents:
-          include: Sofa.GUI.Qt/sofa/gui/qt/init.h
-          lib: Sofa.GUI.Qt*
+          include:
+            - Sofa.GUI.Qt/sofa/gui/qt/init.h
+          lib:
+            - Sofa.GUI.Qt*
           files:
             - ${{ "Library/" if win }}lib/cmake/Sofa.GUI.Qt/Sofa.GUI.QtConfig.cmake
             - ${{ "Library/" if win }}lib/cmake/Sofa.GUI.Qt/Sofa.GUI.QtConfigVersion.cmake
@@ -233,7 +239,8 @@ outputs:
         - ${{ pin_subpackage('sofa-gui-qt', exact=True) }}
     tests:
       - package_contents:
-          bin: runSofa
+          bin:
+            - runSofa
     about:
       summary: Applications and ressources for the SOFA framework
       description: Application (runSofa) and ressources (examples and share) for SOFA,
